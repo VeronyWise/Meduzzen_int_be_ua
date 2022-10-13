@@ -9,3 +9,10 @@ pip install -r requirements.txt
 
 3. Run server
 uvicorn main:app --reload
+
+4. Create image Docker
+docker build -t conteiner_meduz .
+
+5. Start the Docker Container
+docker run -p 8000:8000 --name meduzz-app conteiner_meduz
+#open URL http://localhost:8000 or http://127.0.0.1:8000
