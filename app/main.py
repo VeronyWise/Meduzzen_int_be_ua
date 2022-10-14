@@ -1,5 +1,4 @@
-from fastapi_health import health
-from fastapi import FastAPI, status
+from fastapi import FastAPI
 
 
 app = FastAPI()
@@ -8,6 +7,6 @@ app = FastAPI()
 def root():
      return {'status': "Working"}
 
-@app.get('/healthcheck', status_code=status.HTTP_200_OK)
+@app.get('/healthcheck')
 def healthy_condition():
     return {'status': "Working"}

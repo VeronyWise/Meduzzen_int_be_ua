@@ -1,0 +1,59 @@
+version: '3.8'
+
+services:
+
+  db:
+    container_name: postgres_med
+    image: postgres
+    restart: always
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=${DB_NAME}
+  pgadmin:
+    container_name: pgadmin
+    image: dpage/pgadmin4
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=${PGADMIN_EMAIL}
+      - PGADMIN_DEFAULT_PASSWORD=${PGADMIN_PASSWORD}
+    ports:
+      - 5050:80
+    depends_on:
+      - db
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# version: "3"
+
+# services:
+#   api:
+#     build: ./
+#     image: myimage
+#     command:  uvicorn app.main:app --reload 
+#     ports:
+#       - 8000:8000
+#     networks:
+#       - test_network
+#     restart:
+#       - always
+
+# networks:
+#   test_network:
+#     driver: bridge
