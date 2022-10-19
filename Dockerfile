@@ -2,11 +2,10 @@ FROM python:3.8
 
 WORKDIR /app
 
-COPY requirements.txt requirements.txt
+COPY ./requirements.txt /app/requirements.txt
 
-RUN pip3 install -r requirements.txt
+RUN pip install --no-cache-dir --upgrade -r /app/requirements.txt
 
-COPY . /app
+COPY ./app /app/app
 
-EXPOSE 8000
-CMD ["uvicorn", "app.main:app", "--host=0.0.0.0", "--reload"]
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
