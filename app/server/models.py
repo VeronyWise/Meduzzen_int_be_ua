@@ -6,7 +6,7 @@ from sqlalchemy.ext.declarative import declarative_base
 
 
 metadata = sqlalchemy.MetaData()
-
+# Base = declarative_base()
 
 class User(Base):
     __tablename__ = "users"
@@ -16,11 +16,11 @@ class User(Base):
     is_active = Column(Boolean, default=True, server_default=sqlalchemy.sql.expression.true(), nullable=False,)
 
 
-# users =  sqlalchemy.Table(
-#     "users",
-#     metadata,
-#     Column("id", Integer, primary_key=True),
-#     Column("email", String, unique=True, index=True),
-#     Column("hashed_password", String),
-#     Column("is_active", Boolean, default=True, server_default=sqlalchemy.sql.expression.true(),
-#         nullable=False,))
+users =  sqlalchemy.Table(
+    "users",
+    metadata,
+    Column("id", Integer, primary_key=True),
+    Column("email", String, unique=True, index=True),
+    Column("hashed_password", String),
+    Column("is_active", Boolean, default=True, server_default=sqlalchemy.sql.expression.true(),
+        nullable=False,))
