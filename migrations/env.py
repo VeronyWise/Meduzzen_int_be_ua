@@ -13,7 +13,7 @@ from app.server.models import Base
 # from app.server.models import users
 # config = context.config
 # section = config.config_ini_section
-Alembic Config
+# Alembic Config
 # fileConfig(config.config_file_name)
 # #зміни в бд які визначає Alembic
 # target_metadata = [users.metadata]
