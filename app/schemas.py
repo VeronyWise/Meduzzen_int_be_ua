@@ -10,19 +10,19 @@ class UserBase(BaseModel):
 
 class UserCreate(UserBase):
     pass
-    # наслідується від UserBase
-    # перетворити з бд у pydantic
+    email: EmailStr
+    username: str
     class Config:
         orm_mode = True
 
-class UserUpdate(UserBase):
-    pass
+class UserUpdate(BaseModel):
+    email: EmailStr
+    username: str
     class Config:
         orm_mode = True
 
 class UserInDB(UserBase):
     id: int
-
     class Config:
         orm_mode = True
 

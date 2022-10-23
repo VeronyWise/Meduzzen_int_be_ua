@@ -8,10 +8,10 @@ DATABASE_URL = "postgresql://postgres:password@postgres_med:5432/meduzz_db"
 
 database = databases.Database(DATABASE_URL)
 
-
 # Alembic, integrated with migrations SQLAlchemy Engine that will interact with our dockerized PostgreSQL database
 engine = create_engine(
     DATABASE_URL, connect_args={"check_same_thread": False})
+
 Session = sessionmaker(bind=engine)
 Base = declarative_base()
 
