@@ -3,9 +3,7 @@ from sqlalchemy import String, Integer, Column, Boolean
 import sqlalchemy
 from app.db import Base
 from sqlalchemy.ext.declarative import declarative_base
-
-
-metadata = sqlalchemy.MetaData()
+from app.db import metadata
 
 
 class User(Base):
