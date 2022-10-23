@@ -2,24 +2,28 @@ import databases
 from sqlalchemy import create_engine, MetaData
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
+from dotenv import load_dotenv, find_dotenv
+import os
 
+#знайти дотенв файл і підтягувати налаштування
+load_dotenv(find_dotenv())
 
-DATABASE_URL = "postgresql://postgres:password@postgres_med:5432/meduzz_db"
+DATABASE_URL = os.getenv('DATABASE_URL')
 
 database = databases.Database(DATABASE_URL)
 
-# Alembic, integrated with migrations SQLAlchemy Engine that will interact with our dockerized PostgreSQL database
-engine = create_engine(
-    DATABASE_URL, connect_args={"check_same_thread": False})
 
-Session = sessionmaker(bind=engine)
-Base = declarative_base()
+
+engine = create_engine(DATABASE_URL)
+
+
 
 metadata = MetaData()
-metadata.create_all(engine)
 
 # ORM session factory bound to this engine,
 # and a base class for our classes definitions.
+Session = sessionmaker(bind=engine)
+Base = declarative_base()
 
 # session call to db for every request to specific 
 def get_db():

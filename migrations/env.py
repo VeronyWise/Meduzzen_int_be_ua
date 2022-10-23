@@ -1,41 +1,26 @@
+import imp
 from logging.config import fileConfig
-
+import os 
 from sqlalchemy import engine_from_config
 from sqlalchemy import pool
-
+from app.server.models import User
+from app.db import DATABASE_URL
 
 from alembic import context
 
 from app.server.models import Base
 
-# from os import environ
-# from alembic import context
-# from app.server.models import users
-# config = context.config
-# section = config.config_ini_section
-Alembic Config
-# fileConfig(config.config_file_name)
-# #зміни в бд які визначає Alembic
-# target_metadata = [users.metadata]
-
-
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
+
 config = context.config
-config.set_main_option("sqlalchemy.url", ' postgresql+psycopg2://postgres:password@localhost:5432/meduzz_db')
+config.set_main_option("sqlalchemy.url", DATABASE_URL)
 
 # Interpret the config file for Python logging.
 # This line sets up loggers basically.
 fileConfig(config.config_file_name)
 
-# if config.config_file_name is not None:
-#     fileConfig(config.config_file_name)
-
-# add your model's MetaData object here
-# for 'autogenerate' support
-# from myapp import mymodel
-# target_metadata = mymodel.Base.metadata
 target_metadata = Base.metadata
 
 # other values from the config, defined by the needs of env.py,

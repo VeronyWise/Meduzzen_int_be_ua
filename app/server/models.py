@@ -3,10 +3,9 @@ from sqlalchemy import String, Integer, Column, Boolean
 import sqlalchemy
 from app.db import Base
 from sqlalchemy.ext.declarative import declarative_base
+from app.db import metadata
 
 
-metadata = sqlalchemy.MetaData()
-# Base = declarative_base()
 
 class User(Base):
     __tablename__ = "users"
