@@ -1,8 +1,8 @@
-"""added_User_table
+"""added migr b5
 
-Revision ID: c337064eec6d
+Revision ID: 5758331fb0b6
 Revises: 
-Create Date: 2022-10-25 12:36:14.852570
+Create Date: 2022-10-27 17:40:05.829614
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = 'c337064eec6d'
+revision = '5758331fb0b6'
 down_revision = None
 branch_labels = None
 depends_on = None

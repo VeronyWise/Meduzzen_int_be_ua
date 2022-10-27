@@ -17,7 +17,7 @@ user_router = APIRouter()
 
 
 @user_router.get("/users", response_model=Page[UserBase], status_code=status.HTTP_200_OK)
-async def get_users(session: AsyncSession = Depends(get_db), params: Params = Depends()):
+async def get_users(session: AsyncSession = Depends(get_db), params: Params = Depends()) -> Page[UserBase]:
      all_user = await UserService(session=session).get_all_users()
      return paginate(params=params, sequence= [UserBase(**user.__dict__) for user in all_user],)
 
@@ -27,7 +27,7 @@ async def get_one_user(user_id:int, session: AsyncSession = Depends(get_db)):
      return UserBase(**user.__dict__)
 
 @user_router.post("/creatusers/", response_model=UserCreate, status_code=status.HTTP_201_CREATED)
-async def creat_user(user: UserCreate, session: AsyncSession = Depends(get_db)):
+async def creat_user(user: UserCreate, session: AsyncSession = Depends(get_db)) -> UserCreate:
      user = await UserService(session=session).create_user(serialized_data=user)
      return UserCreate(**user.__dict__)
 
@@ -56,4 +56,6 @@ async def update_user(
 
 @user_router.delete('/{user_id}', status_code=status.HTTP_204_NO_CONTENT)
 async def user_delete(user_id: int, session: AsyncSession= Depends(get_db)):
-    await  UserService(session=session).delete_user(user_id=user_id)
+     if not user_id:
+          raise 
+     await  UserService(session=session).delete_user(user_id=user_id)
