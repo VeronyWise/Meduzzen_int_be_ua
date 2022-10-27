@@ -1,18 +1,19 @@
-import imp
 from logging.config import fileConfig
 import os 
 from sqlalchemy import engine_from_config
-from sqlalchemy import pool
 from app.server.models import User
+from sqlalchemy import pool
 from app.db import DATABASE_URL
 
 from alembic import context
-
+# from app.server.models  import users
 from app.server.models import Base
 
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
+
+
 
 config = context.config
 config.set_main_option("sqlalchemy.url", DATABASE_URL)
@@ -60,6 +61,8 @@ def run_migrations_online() -> None:
     and associate a connection with the context.
 
     """
+    # alembic_config = config.get_section(config.config_ini_section)
+    # alembic_config['sqlalchemy.url'] = ['SQLALCHEMY_DATABASE_URI']    
     connectable = engine_from_config(
         config.get_section(config.config_ini_section),
         prefix="sqlalchemy.",

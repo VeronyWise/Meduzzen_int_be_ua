@@ -1,33 +1,59 @@
-from fastapi import FastAPI, Response, status, HTTPException, Depends, APIRouter
-from typing import List
-from fastapi import FastAPI, HTTPException
-from app.db import database, engine, metadata, Session, get_db
-
-import crud
-import schemas
-
-
-metadata.create_all(bind=engine)
-router = APIRouter(prefix="/users", tags=['Users'])
+from fastapi import Depends, APIRouter, Body, HTTPException
+from fastapi.encoders import jsonable_encoder
+from starlette import status
+from app.db import engine, metadata, get_db
+from fastapi_pagination import Page, Params
+from fastapi_pagination.paginator import paginate
+from sqlalchemy.ext.asyncio import AsyncSession
 
 
-@router.get("/users/", response_model=schemas.UserList, status_code=status.HTTP_201_CREATED)
-async def get_users(db: Session = Depends(get_db), skip: int = 0, limit: int = 100):
-     return await crud.get_users(skip=skip, limit=limit)
-
-@router.get("/users/{id}", response_model=schemas.UserList)
-async def get_one_user(user_id: int):
-     db_user = crud.get_user(user_id=id)
-     if db_user is None:
-          raise HTTPException(status_code=400, detail="User has not found")
-     return await db_user
+from app.crud import UserService
+from app.schemas import UserBase, UserCreate, UserUpdate
 
 
-@router.post("/users/", response_model=schemas.UserCreate)
-async def creat_user(user: schemas.UserCreate):
-     db_user = await crud.get_user_by_email(email=user.email)
-     if db_user:
-        raise HTTPException(status_code=400, detail="Email already registered")
-     return await crud.create_user(user=user)
 
-@router.
+# metadata.create_all(bind=engine)
+user_router = APIRouter()
+
+
+@user_router.get("/users", response_model=Page[UserBase], status_code=status.HTTP_200_OK)
+async def get_users(session: AsyncSession = Depends(get_db), params: Params = Depends()):
+     all_user = await UserService(session=session).get_all_users()
+     return paginate(params=params, sequence= [UserBase(**user.__dict__) for user in all_user],)
+
+@user_router.get("/users/{user_id}", response_model=UserBase, status_code=status.HTTP_200_OK)
+async def get_one_user(user_id:int, session: AsyncSession = Depends(get_db)):
+     user = await UserService(session=session).get_user_active(user_id=user_id)
+     return UserBase(**user.__dict__)
+
+@user_router.post("/creatusers/", response_model=UserCreate, status_code=status.HTTP_201_CREATED)
+async def creat_user(user: UserCreate, session: AsyncSession = Depends(get_db)):
+     user = await UserService(session=session).create_user(serialized_data=user)
+     return UserCreate(**user.__dict__)
+
+@user_router.patch('/users/{user_id}/', response_model=UserBase, status_code=status.HTTP_202_ACCEPTED)
+async def update_user(
+     user_id: int, 
+     is_active: bool = Body(None),
+     firstname: str = Body(None),
+     lastname: str = Body(None),
+     password: str = Body(None),
+     session: AsyncSession = Depends(get_db)):
+     user_service = UserService(session=session)
+     user = await user_service.get_user_active(user_id=user_id)
+     user_in = UserUpdate(**jsonable_encoder(user))
+     if password is not None:
+          user_in.password = password
+     if is_active is not None:
+          user_in.is_active = is_active
+     if firstname is not None:
+          user_in.firstname = firstname
+     if lastname is not None:
+          user_in.lastname = lastname
+     user = await user_service.update_user(db_user=user, serialized_user=user_in)
+     return UserBase(**jsonable_encoder(user))
+
+
+@user_router.delete('/{user_id}', status_code=status.HTTP_204_NO_CONTENT)
+async def user_delete(user_id: int, session: AsyncSession= Depends(get_db)):
+    await  UserService(session=session).delete_user(user_id=user_id)

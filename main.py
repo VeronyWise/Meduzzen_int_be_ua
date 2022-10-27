@@ -1,13 +1,13 @@
 from fastapi import FastAPI
 import sqlalchemy
 from app.db import database
-from . import models, schemas
+from app.routers.routers import user_router
 
 
-app = FastAPI()
+app = FastAPI(debug=True)
 metadata = sqlalchemy.MetaData()
 
-
+app.include_router(router=user_router)
 
 @app.on_event("startup")
 async def startup():
@@ -20,10 +20,6 @@ async def shutdown():
     await database.disconnect()
 
 
-
-@app.get('/')
-def root():
-     return {'status': "Working"}
 
 @app.get('/healthcheck')
 def healthy_condition():
