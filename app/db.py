@@ -8,11 +8,17 @@ from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 
 load_dotenv(find_dotenv())
 
-DATABASE_URL = os.getenv('DATABASE_URL')
+# DATABASE_URL = os.getenv('DATABASE_URL')
+db_user = os.getenv('DB_USER')
+db_passwoord = os.getenv('DB_PASSWORD')
+db_name = os.getenv('DB_NAME')
+db_host = os.getenv('DB_HOST')
 
-database = databases.Database(DATABASE_URL)
+DATABASE_URL = 'postgresql://{db_user}:{db_passwoord}@{db_host}:5432/{db_name}'
+# database = databases.Database(DATABASE_URL)
 # engine = create_engine(DATABASE_URL)
-engine = create_async_engine(DATABASE_URL.replace('postgresql://', 'postgresql+asyncpg://'))
+ASYNC_DATABASE_URL = 'postgresql+asyncpg://{db_user}:{db_passwoord}@{db_host}:5432/{db_name}'
+engine = create_async_engine(ASYNC_DATABASE_URL)
 metadata = MetaData()
 
 Base = declarative_base()
