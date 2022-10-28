@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 import sqlalchemy
-from app.db import database
+# from app.db import database
 from app.routers.routers import user_router
 
 

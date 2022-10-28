@@ -1,9 +1,6 @@
-from pydantic import BaseModel, EmailStr, validator
-from typing import List, Optional
-import re
-from hashlib import sha256
-from fastapi import HTTPException
-from starlette import status
+from pydantic import BaseModel, EmailStr
+from typing import  Optional
+
 
 # model responsible for validating the request body:
 class UserBase(BaseModel):
@@ -11,19 +8,6 @@ class UserBase(BaseModel):
     lastname: str
     username: str
     email: str
-
-# class UserPasswordCheck(BaseModel):
-#     password: str
-
-#     @validator('password')
-#     def passwords_match(cls, password, **kwargs):
-#         regex = r'((?=\S*?[A-Z])(?=\S*?[a-z])(?=\S*?[0-9]).{6,40})\S$'
-#         result = re.findall(regex, password)
-#         if not result:
-#             raise  HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
-#             detail='Password must be minimum of 6 characters, at least 1 uppercase letter,'
-#            '1 lowercase letter, and 1 num with no spaces.')
-#         return sha256(password.encode('utf-8')).hexdigest()
 
 
 class UserCreate(UserBase):
@@ -44,12 +28,3 @@ class UserUpdate(BaseModel):
     class Config:
         orm_mode = True
 
-# class UserInDB(UserBase):
-#     email: EmailStr
-#     class Config:
-#         orm_mode = True
-
-# class UserList(UserBase):
-#     id: int
-#     is_active: bool
-#     users: List[UserBase] = []
