@@ -8,7 +8,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 
 from app.crud import UserService
-from app.schemas import UserBase, UserCreate, UserUpdate
+from app.schemas.user import UserBase, UserCreate, UserUpdate
 
 
 
@@ -30,24 +30,6 @@ async def get_one_user(user_id:int, session: AsyncSession = Depends(get_db)):
 async def creat_user(user: UserCreate, session: AsyncSession = Depends(get_db)) -> UserCreate:
      user = await UserService(session=session).create_user(serialized_data=user)
      return UserCreate(**user.__dict__)
-
-# @user_router.patch('/{user_id}', response_model=UserBase, status_code=status.HTTP_202_ACCEPTED)
-# async def users(user_id: int, users: UserUpdate, password: str = Body(None),  session: AsyncSession = Depends(get_db)) -> UserUpdate:
-# #     user_up = await UserService(session=session).update_user(serialized_user = serialized_user, db_user=db_user)
-# #     return UserUpdate(**user_up.__dict__)
-#      user_service = UserService(session=session)
-#      user = await user_service.get_user_active(user_id=user_id)
-#      user_in = UserUpdate(**jsonable_encoder(user))
-#      if password is not None:
-#           user_in.password = password
-#      if users.is_active is not None:
-#           user_in.is_active = users.is_active
-#      if users.firstname is not None:
-#           user_in.firstname = users.firstname
-#      if users.lastname is not None:
-#           user_in.lastname = users.lastname
-#      user = await user_service.update_user(db_user=user, serialized_user=user_in)
-#      return UserBase(**jsonable_encoder(user))
 
 
 @user_router.patch('/users/{user_id}/', response_model=UserBase, status_code=status.HTTP_202_ACCEPTED)

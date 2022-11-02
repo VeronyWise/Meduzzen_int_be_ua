@@ -1,10 +1,12 @@
-# import databases
+import databases
 from sqlalchemy import create_engine, MetaData
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from dotenv import load_dotenv, find_dotenv
 import os
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
+from fastapi_login import LoginManager
+
 
 load_dotenv(find_dotenv())
 
@@ -15,7 +17,7 @@ DATABASE_URL = os.getenv('DATABASE_URL')
 # db_host = os.getenv('DB_HOST')
 
 # DATABASE_URL = 'postgresql://{db_user}:{db_passwoord}@{db_host}:5432/{db_name}'
-# database = databases.Database(DATABASE_URL)
+database = databases.Database(DATABASE_URL)
 # engine = create_engine(DATABASE_URL)
 
 # ASYNC_DATABASE_URL = 'postgresql+asyncpg://{db_user}:{db_passwoord}@{db_host}:5432/{db_name}'
@@ -33,3 +35,4 @@ async def get_db() -> AsyncSession:
     async with async_session() as session:
         yield session
         await session.commit()
+
