@@ -18,7 +18,7 @@ from app.crud import get_current_user
 token_auth_schema = HTTPBearer()
 # metadata.create_all(bind=engine)
 user_router = APIRouter()
-user_router = APIRouter(dependencies=[user_id:=Depends(token_auth_schema)])
+
 
 @user_router.get("/users", response_model=Page[UserBase], status_code=status.HTTP_200_OK)
 async def get_users(session: AsyncSession = Depends(get_db), params: Params = Depends(),

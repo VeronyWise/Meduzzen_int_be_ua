@@ -88,14 +88,6 @@ class AuthService(BaseSession):
         # return UserBase(**jsonable_encoder(user))
         return user
 
-    # async def update_me(self, serialized_data: UserUpdate, user_id: int):
-    #     user = await UserService(self.session).update_user(serialized_data=serialized_data,
-    #              user_id=id)
-    #     # self.session.refresh(user)
-    #     # self.session.commit()
-    #     print(user)
-    #     return user
-
     @staticmethod
     def verify_password(hashed_password, password) -> bool:
         return UserService.get_password_hash(password) == hashed_password

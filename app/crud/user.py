@@ -82,18 +82,3 @@ class UserService(BaseSession):
      detail='Password must be minimum of 6 characters, at least 1 uppercase letter,'
                '1 lowercase letter, and 1 num with no spaces.')
           return password
-
-
-          # async def update_user(self, db_user: User, serialized_user: user.UserUpdate, user_id:int):
-          # update_data = serialized_user.dict()
-          # if update_data['password']:
-          #      password = self.validate_password(update_data['password'])
-          #      del update_data['password']
-          #      update_data['hashed_password'] = self.get_password_hash(password)
-          # for field in update_data:
-          #      if field in update_data:
-          #           setattr(db_user, field, update_data[field])
-          # self.session.add(db_user)
-          # await self.session.commit()
-          # await self.session.refresh(db_user)
-          # return db_user
