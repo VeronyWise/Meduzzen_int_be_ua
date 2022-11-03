@@ -18,3 +18,5 @@ class User(Base):
      server_default=sqlalchemy.sql.expression.true(), nullable=True,)
  
 users = User.__table__
+
+

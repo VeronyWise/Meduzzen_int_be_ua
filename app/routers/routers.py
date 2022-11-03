@@ -8,7 +8,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 
 from app.crud import UserService
-from app.schemas import UserBase, UserCreate, UserUpdate
+from app.schemas.user import UserBase, UserCreate, UserUpdate
 
 
 
@@ -30,6 +30,7 @@ async def get_one_user(user_id:int, session: AsyncSession = Depends(get_db)):
 async def creat_user(user: UserCreate, session: AsyncSession = Depends(get_db)) -> UserCreate:
      user = await UserService(session=session).create_user(serialized_data=user)
      return UserCreate(**user.__dict__)
+
 
 @user_router.patch('/users/{user_id}/', response_model=UserBase, status_code=status.HTTP_202_ACCEPTED)
 async def update_user(

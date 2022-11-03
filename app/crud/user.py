@@ -2,19 +2,16 @@ from fastapi import HTTPException
 from requests import session
 from starlette import status
 from app.server.models import User
-from app import schemas
+from app.schemas import user
 from hashlib import sha256
 from typing import List, Optional
 from sqlalchemy.orm import Session
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, update, insert
 import re
+from app.crud.base_session import BaseSession
 
-
-class UserService:
-
-     def __init__(self, session: Session):
-          self.session = session
+class UserService(BaseSession):
 
      async def get_user(self, user_id: int):
           user: User = await self.session.get(User, user_id)
@@ -31,13 +28,14 @@ class UserService:
           user: User = user.scalars().one_or_none()
           return user
 
-     async def create_user(self, serialized_data: schemas.UserCreate) -> User:
+     async def create_user(self, serialized_data: user.UserCreate) -> User:
           user = await self.get_user_by_email(email=serialized_data.email)
           if user:
                raise  HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
                     detail='User with this email already register')
-          self.validate_password(serialized_data.hashed_password)
-          serialized_data.hashed_password = self.get_password_hash(serialized_data.hashed_password)
+          if serialized_data.hashed_password:
+               self.validate_password(serialized_data.hashed_password)
+               serialized_data.hashed_password = self.get_password_hash(serialized_data.hashed_password)
           result = await self.session.execute(insert(User).values(**serialized_data.dict()))
           pk = result.inserted_primary_key
           return await self.get_user(user_id=pk)
@@ -48,7 +46,7 @@ class UserService:
                raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="User isnt active")
           return user
 
-     async def update_user(self, db_user: User, serialized_user: schemas.UserUpdate):
+     async def update_user(self, db_user: User, serialized_user: user.UserUpdate):
           update_data = serialized_user.dict()
           if update_data['password']:
                password = self.validate_password(update_data['password'])
@@ -70,7 +68,7 @@ class UserService:
 
      @staticmethod
      def get_password_hash(password):
-        return sha256(password.encode('utf-8')).hexdigest()
+          return sha256(password.encode('utf-8')).hexdigest()
 
      @staticmethod
      def validate_password(password):
