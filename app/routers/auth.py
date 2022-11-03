@@ -11,6 +11,7 @@ from app.routers.routers import UserBase
 import os 
 from fastapi_auth0 import Auth0
 from fastapi.security import OAuth2PasswordRequestForm
+from app.server.models import User
 
 
 auth_router = APIRouter()
@@ -26,10 +27,12 @@ async def login( auth_data: OAuth2PasswordRequestForm = Depends(),
     return await AuthService(db).authenticate_user(auth_data.username, auth_data.password)
 
 @auth_router.get("/me", response_model=UserBase)
-async def get_secure_scoped2(user: UserBase = Depends(get_current_user)) -> UserBase:
-    return user
+async def get_me(user: User = Depends(get_current_user)) -> UserBase:
+    return UserBase(**jsonable_encoder(user))
 
 @auth_router.post("/sign-up/", response_model=Token, status_code=status.HTTP_201_CREATED)
 async def sign_up(user_data: UserCreate, db: AsyncSession = Depends(get_db)) -> Token:
     return await AuthService(db).register_new_user(user_data)
 
+
+    

@@ -11,6 +11,8 @@ from sqlalchemy import select, update, insert
 import re
 from app.crud.base_session import BaseSession
 
+
+
 class UserService(BaseSession):
 
      async def get_user(self, user_id: int):
