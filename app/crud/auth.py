@@ -6,12 +6,14 @@ from app.db import get_db
 from sqlalchemy.ext.asyncio import AsyncSession
 from jose import JWTError, jwt
 import jwt as auth_jwt
-from app.schemas.user import UserBase, UserCreate, Token, UserLogin
+from app.schemas.user import UserBase, UserCreate, Token, UserLogin, UserUpdate
 from datetime import datetime, timedelta
 from fastapi.encoders import jsonable_encoder
 from app.server.models import User
 from ..settings import settings
 from fastapi.security import OAuth2PasswordBearer
+from typing import Any, Dict, Optional
+
 
 
 
@@ -19,9 +21,10 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl='/login')
 token_auth_schema = HTTPBearer()
 
 async def get_current_user(token =  Depends(token_auth_schema), db: AsyncSession = Depends(get_db)) -> UserBase:
+
     result = VerifyToken(token.credentials).verify() 
     if 'email' in result:
-        return await AuthService(db).get_or_creat_user(email=result['email'])
+        return await AuthService(db).get_or_create_user(email=result['email'])
     return await AuthService(db).verify_token(token.credentials)
 
 
@@ -33,7 +36,7 @@ exception = HTTPException(
 
 class AuthService(BaseSession):
 
-    async def verify_token(self, token: str) -> UserBase:
+    async def verify_token(self, token: str) -> User:
         try:
             payload = jwt.decode(
                 token,
@@ -44,7 +47,8 @@ class AuthService(BaseSession):
             raise exception
         user_id = payload.get('sub')
         user = await UserService(self.session).get_user(int(user_id))
-        return UserBase(**jsonable_encoder(user))
+        # return UserBase(**jsonable_encoder(user))
+        return user
 
     @classmethod
     def create_token(cls, user: User) -> Token:
@@ -76,12 +80,21 @@ class AuthService(BaseSession):
         self.session.commit()
         return self.create_token(user)
 
-    async def get_or_creat_user(self, email):
+    async def get_or_create_user(self, email) -> User:
         user_service = UserService(self.session)
         user = await user_service.get_user_by_email(email=email)
         if not user:
             user = await user_service.create_user(UserCreate(email=email))
-        return UserBase(**jsonable_encoder(user))
+        # return UserBase(**jsonable_encoder(user))
+        return user
+
+    # async def update_me(self, serialized_data: UserUpdate, user_id: int):
+    #     user = await UserService(self.session).update_user(serialized_data=serialized_data,
+    #              user_id=id)
+    #     # self.session.refresh(user)
+    #     # self.session.commit()
+    #     print(user)
+    #     return user
 
     @staticmethod
     def verify_password(hashed_password, password) -> bool:
