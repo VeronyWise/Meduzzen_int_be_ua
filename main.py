@@ -1,7 +1,7 @@
 from fastapi import FastAPI, Depends
 import sqlalchemy
 # from app.db import database
-from app.routers.routers import user_router
+from app.routers.user import user_router
 from app.routers.auth import auth_router
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import OAuth2PasswordBearer

@@ -19,3 +19,4 @@ rsa==4.9
 fastapi-login==1.8.3
 pyjwt==2.6.0
 fastapi-auth0==0.3.0
+sqlalchemy-utils==0.38.3

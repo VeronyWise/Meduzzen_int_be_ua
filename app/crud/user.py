@@ -1,7 +1,7 @@
 from fastapi import HTTPException
 from requests import session
 from starlette import status
-from app.server.models import User
+from app.models.user import User
 from app.schemas import user
 from hashlib import sha256
 from typing import List, Optional

@@ -2,14 +2,14 @@ from app.crud.base_session import BaseSession
 from app.crud.user import UserService
 from fastapi import Depends, status, HTTPException
 from fastapi.security import HTTPBearer
-from app.db import get_db
+from app.db.db import get_db
 from sqlalchemy.ext.asyncio import AsyncSession
 from jose import JWTError, jwt
 import jwt as auth_jwt
 from app.schemas.user import UserBase, UserCreate, Token, UserLogin, UserUpdate
 from datetime import datetime, timedelta
 from fastapi.encoders import jsonable_encoder
-from app.server.models import User
+from app.models.user import User
 from ..settings import settings
 from fastapi.security import OAuth2PasswordBearer
 from typing import Any, Dict, Optional
