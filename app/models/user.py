@@ -17,10 +17,10 @@ keywords_tables = Table(
     Column("company_id", ForeignKey("companies.id"), primary_key=True),
 )
 
-class UserType(enum.Enum):
-    admin = '1'
-    regular = '2'
-    owner = '3'
+class UserType(str, enum.Enum):
+    admin = "1"
+    regular = "2"
+    owner = "3"
 
 class User(Base):
 
@@ -37,12 +37,13 @@ class User(Base):
         )
     user_type = Column(Enum(UserType), nullable=False)
 
-    # company_id = Column(Integer, ForeignKey('companies.id'))
-    company =relationship("Company")
-    keywords = relationship("Company", secondary=keywords_tables, back_populates="users")
+
+    # company =relationship("Company")
+    companies = relationship("Company", secondary=keywords_tables, back_populates="users")
+    # company_id = Column(Integer, ForeignKey('companies.id'))    
     # company = relationship("Company", back_populates="owner")   # 4comp owner to User
     # employee = relationship("Company", back_populates="users")  # 5user-comp-id to Company
-    statement = relationship("JoinStatement", back_populates="owner_statement") #  JS to User
+    join_statements = relationship("JoinStatement", back_populates="owner_statement") #  JS to User
 
 
 class Company(Base):
@@ -56,9 +57,9 @@ class Company(Base):
     creation_data = Column(DateTime)
     # owner = relationship("User", back_populates="companies") # 1comp owner to User
     # employee = relationship("User", back_populates="employees")  # 2user-comp-id to Company
-    keywords = relationship("User", secondary=keywords_tables, back_populates="companies")
-    statement = relationship("JoinStatement", back_populates="statement_company") # 3 JS to Company
-    quiz = relationship("Quiz", back_populates="quiz_company") # 7 quiz to Company
+    users = relationship("User", secondary=keywords_tables, back_populates="companies")
+    statement_company = relationship("JoinStatement", back_populates="statement_company") # 3 JS to Company
+    quizes = relationship("Quiz", back_populates="quiz_company") # 7 quiz to Company
 
 class JoinStatement(Base):
 
@@ -67,9 +68,9 @@ class JoinStatement(Base):
     user_id =  Column(Integer, ForeignKey('users.id'))
     company_id = Column(Integer, ForeignKey('companies.id'))    
     is_accepted = Column(Boolean, default=True, nullable=False)
-    typy_employee = Column(String(200))
+    typy_employee = Column(String(200)) #хто відпрвив заявки
 
-    statement_company = relationship("Company", back_populates="join_statements") # 13 JS to Company
+    statement_company = relationship("Company", back_populates="statement_company") # 13 JS to Company
     owner_statement = relationship("User", back_populates="join_statements") # 14 JS to User
 
 class Quiz(Base):
@@ -96,7 +97,7 @@ class Question(Base):
     quiz_id = Column(Integer, ForeignKey('quizes.id')) 
 
     question = relationship("Quiz", back_populates="questions") # 11 question to quiz
-    answer = relationship("Answer", back_populates="answer") # 10 answer to question 
+    answers = relationship("Answer", back_populates="answer") # 10 answer to question 
 
 class Answer(Base):
 

@@ -3,6 +3,7 @@ import sqlalchemy
 # from app.db import database
 from app.routers.user import user_router
 from app.routers.auth import auth_router
+from app.routers.company import company_router
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import OAuth2PasswordBearer
 
@@ -12,6 +13,7 @@ metadata = sqlalchemy.MetaData()
 
 app.include_router(router=user_router)
 app.include_router(router=auth_router, tags=["login"])
+app.include_router(router=company_router, tags=["Company"])
 
 origins = ["*"]
 app.add_middleware(
