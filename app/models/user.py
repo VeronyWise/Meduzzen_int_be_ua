@@ -7,7 +7,9 @@ from app.db.db import metadata
 from sqlalchemy import Boolean, Column, ForeignKey, Integer, String, DateTime
 from sqlalchemy.orm import relationship
 # from sqlalchemy_utils.types.choice import ChoiceType
-import enum
+from enum import Enum
+from sqlalchemy.dialects import postgresql
+from app.models.enummodels import StatementType, UserType
 
 
 keywords_tables = Table(
@@ -17,10 +19,7 @@ keywords_tables = Table(
     Column("company_id", ForeignKey("companies.id"), primary_key=True),
 )
 
-class UserType(str, enum.Enum):
-    admin = "1"
-    regular = "2"
-    owner = "3"
+
 
 class User(Base):
 
@@ -35,14 +34,9 @@ class User(Base):
     is_active = Column(
         Boolean, default=True,server_default=sqlalchemy.sql.expression.true(), nullable=True,
         )
-    user_type = Column(Enum(UserType), nullable=False)
+    user_type = Column(postgresql.ENUM(UserType), default=UserType.owner ,nullable=False)
 
-
-    # company =relationship("Company")
     companies = relationship("Company", secondary=keywords_tables, back_populates="users")
-    # company_id = Column(Integer, ForeignKey('companies.id'))    
-    # company = relationship("Company", back_populates="owner")   # 4comp owner to User
-    # employee = relationship("Company", back_populates="users")  # 5user-comp-id to Company
     join_statements = relationship("JoinStatement", back_populates="owner_statement") #  JS to User
 
 
@@ -55,8 +49,7 @@ class Company(Base):
     description = Column(String(255))
     owner_id = Column(Integer, ForeignKey('users.id'))
     creation_data = Column(DateTime)
-    # owner = relationship("User", back_populates="companies") # 1comp owner to User
-    # employee = relationship("User", back_populates="employees")  # 2user-comp-id to Company
+
     users = relationship("User", secondary=keywords_tables, back_populates="companies")
     statement_company = relationship("JoinStatement", back_populates="statement_company") # 3 JS to Company
     quizes = relationship("Quiz", back_populates="quiz_company") # 7 quiz to Company
@@ -67,8 +60,8 @@ class JoinStatement(Base):
     id = Column(Integer, primary_key=True)
     user_id =  Column(Integer, ForeignKey('users.id'))
     company_id = Column(Integer, ForeignKey('companies.id'))    
-    is_accepted = Column(Boolean, default=True, nullable=False)
-    typy_employee = Column(String(200)) #хто відпрвив заявки
+    is_accepted = Column(Boolean, default=False, nullable=False)
+    type = Column(postgresql.ENUM(StatementType), default=StatementType.FromUser, nullable=False) #хто відпрвив заявки
 
     statement_company = relationship("Company", back_populates="statement_company") # 13 JS to Company
     owner_statement = relationship("User", back_populates="join_statements") # 14 JS to User

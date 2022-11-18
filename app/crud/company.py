@@ -12,6 +12,7 @@ import re
 from app.crud.base_session import BaseSession
 from app.crud import get_current_user
 from app.crud.user import UserService
+from app.models.enummodels import StatementType, UserType
 
 
 class CompanyService(BaseSession):
@@ -69,31 +70,16 @@ class CompanyService(BaseSession):
 
 
      async def get_statement(self, company_id: int, user_id: int) -> JSSchemas:
-          request = await self.session.execute(select(JoinStatement).filter(JoinStatement.user_id == user_id,
+          request = await self.session.execute(select(JoinStatement).filter(JoinStatement.user_id==user_id,
                                                        JoinStatement.company_id == company_id)).scalars().one_or_none()
           if request is None:
                raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
                               detail=f"No request from user with id {user_id} to company with id {company_id}")
           return request
 
-
-
-
-
-
      # async def set_admin(self, owner_id: int, user_id:int,company_id:int):
      #      user = UserService(session=session).get_user(user_id=user_id)
      #      company = self.get_current_admin(company_id=company_id)
-
-
-
-     async def invite_user_to_company(self, user_id: int, company_id: int, current_user: User):
-          pass
-
-     async def remove_employee_from_company(self, employee_id: int, company_id: int, current_user: User):
-          pass
-
-
 
 
      async def delete_company(self, id: int):

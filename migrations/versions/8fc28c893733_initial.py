@@ -1,16 +1,16 @@
-"""empty message
+"""initial
 
-Revision ID: 8ce3470ee1d6
+Revision ID: 8fc28c893733
 Revises: 
-Create Date: 2022-11-04 23:37:44.412067
+Create Date: 2022-11-18 19:15:43.804384
 
 """
 from alembic import op
 import sqlalchemy as sa
-
+from sqlalchemy.dialects import postgresql
 
 # revision identifiers, used by Alembic.
-revision = '8ce3470ee1d6'
+revision = '8fc28c893733'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -27,7 +27,7 @@ def upgrade() -> None:
     sa.Column('hashed_password', sa.String(), nullable=True),
     sa.Column('creation_data', sa.DateTime(), nullable=True),
     sa.Column('is_active', sa.Boolean(), server_default=sa.text('true'), nullable=True),
-    sa.Column('user_type', sa.Enum('admin', 'regular', 'owner', name='usertype'), nullable=False),
+    sa.Column('user_type', postgresql.ENUM('admin', 'regular', 'owner', name='usertype',  create_type=False), nullable=False),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_index(op.f('ix_users_email'), 'users', ['email'], unique=True)
@@ -53,7 +53,7 @@ def upgrade() -> None:
     sa.Column('user_id', sa.Integer(), nullable=True),
     sa.Column('company_id', sa.Integer(), nullable=True),
     sa.Column('is_accepted', sa.Boolean(), nullable=False),
-    sa.Column('typy_employee', sa.String(length=200), nullable=True),
+    sa.Column('type', postgresql.ENUM('FromUser', 'FromCompany', name='statementtype'), nullable=False),
     sa.ForeignKeyConstraint(['company_id'], ['companies.id'], ),
     sa.ForeignKeyConstraint(['user_id'], ['users.id'], ),
     sa.PrimaryKeyConstraint('id')

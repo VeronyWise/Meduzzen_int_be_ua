@@ -10,7 +10,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, update, insert
 import re
 from app.crud.base_session import BaseSession
-
+from app.models.enummodels import StatementType, UserType
 
 
 class UserService(BaseSession):
