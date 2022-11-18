@@ -6,6 +6,7 @@ class StatementsBase(BaseModel):
      is_accepted: bool
 
 class CreatStatements(BaseModel):
+     user_id: int
      company_id: int
 
      class Config:

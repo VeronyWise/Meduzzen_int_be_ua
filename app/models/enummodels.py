@@ -8,3 +8,8 @@ class UserType(str, Enum):
 class StatementType(str, Enum):
     FromUser = "company"
     FromCompany = "user"
+
+class StatementStatus(str, Enum):
+    confirmed = 'confirmed'    
+    expect = 'expect'
+    rejected = 'rejected'

@@ -37,28 +37,6 @@ async def update_company(id:int, company:CompanyBase, session: AsyncSession = De
     result = await CompanyService(session=session).update_company(company=company, id=id, current_user=current_user)
     return CompanyCreate(**result.__dict__)
     
-# @company_router.put("/remove_employee/{employee_id}")
-# async def remove_employee_from_company(employee_id: int, company_id: int,
-#                                        current_user=Depends(get_current_user),
-#                                        session: AsyncSession= Depends(get_db)):
-#     pass
-
-#current_user=Depends(get_owner_or_admin),
-# @company_router.put("/request/")
-# async def request(user_id: int, company_id: int,
-                                       
-#                                        session: AsyncSession= Depends(get_db)):
-#     request = await CompanyService(session=session).get_statement(company_id=company_id, user_id=user_id)
-#     return request
-
-# @company_router.put("/set_admin/{user_id}")
-# async def set_admin(user_id: int, company_id: int,
-#                                        current_user=Depends(get_current_user),
-#                                        session: AsyncSession= Depends(get_db)):
-#     pass
-
-
-
 @company_router.delete("/company/{company_id}", status_code=status.HTTP_204_NO_CONTENT)
 async def delete_company_by_owner(company_id:int, session: AsyncSession= Depends(get_db),
                          company: Company = Depends(get_owner)):

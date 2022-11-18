@@ -48,5 +48,5 @@ async def update_statements(id:int, statements:StatementsBase, session: AsyncSes
 @statements_router.delete('/statement/{id}/', status_code=status.HTTP_204_NO_CONTENT)
 async def delete(id:int, session: AsyncSession = Depends(get_db),
                          current_user: User= Depends(get_owner)):
-     result = await StatementsService(session=session).delete_statements(id=id)
+     return await StatementsService(session=session).delete_statements(id=id)
 

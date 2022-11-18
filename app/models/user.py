@@ -9,7 +9,7 @@ from sqlalchemy.orm import relationship
 # from sqlalchemy_utils.types.choice import ChoiceType
 from enum import Enum
 from sqlalchemy.dialects import postgresql
-from app.models.enummodels import StatementType, UserType
+from app.models.enummodels import StatementType, UserType, StatementStatus
 
 
 keywords_tables = Table(
@@ -60,8 +60,8 @@ class JoinStatement(Base):
     id = Column(Integer, primary_key=True)
     user_id =  Column(Integer, ForeignKey('users.id'))
     company_id = Column(Integer, ForeignKey('companies.id'))    
-    is_accepted = Column(Boolean, default=False, nullable=False)
-    type = Column(postgresql.ENUM(StatementType), default=StatementType.FromUser, nullable=False) #хто відпрвив заявки
+    status = Column(postgresql.ENUM(StatementStatus), default=StatementStatus.expect, nullable=True)
+    type_sender = Column(postgresql.ENUM(StatementType), default=StatementType.FromUser, nullable=True) #хто відпрвив заявки
 
     statement_company = relationship("Company", back_populates="statement_company") # 13 JS to Company
     owner_statement = relationship("User", back_populates="join_statements") # 14 JS to User

@@ -10,13 +10,13 @@ from app.crud import get_current_user
 from app.crud.user import UserService
 from app.crud.company import CompanyService
 from app.schemas.statements import StatementsBase, StatementsCompany, StatementsUser, CreatStatements
-from app.models.enummodels import StatementType, UserType
+from app.models.enummodels import StatementType, UserType, StatementStatus
 
 
 class StatementsService(BaseSession):
 
      '''Check permission for statement'''
-     async def check_permission_out_by_user(self, user_id:int, company: Company,
+     async def check_send_statements(self, user_id:int, company: Company,
                     statements_data:CreatStatements, owner_id:int)->bool:
           if user_id != statements_data.user_id and user_id != company.owner_id:
                raise
@@ -92,3 +92,6 @@ class StatementsService(BaseSession):
           if not statements:
                raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='Statement doesnt found!')
           await self.session.delete(statements)
+
+
+     
