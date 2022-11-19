@@ -1,20 +1,19 @@
-from pydantic import BaseModel, EmailStr
-from typing import  Optional
-from datetime import date, datetime, time, timedelta
+from pydantic import BaseModel
+from app.models.enummodels import StatementType, StatementStatus
+     
 
 class StatementsBase(BaseModel):
-     is_accepted: bool
+     status: str
+
 
 class CreatStatements(BaseModel):
      user_id: int
-     company_id: int
 
      class Config:
           orm_mode = True
 
-class StatementsUser(StatementsBase):
-     id: int
-     user_id: int
+class CreatStatementsUser(BaseModel):
+     company_id: int
 
      class Config:
           orm_mode = True
@@ -24,7 +23,21 @@ class StatementsCompany(StatementsBase):
      id: int
      company_id: int
      user_id: int
-     is_accepted: bool
+
+     class Config:
+          orm_mode = True
+
+
+class AcceptedInCompany(StatementsBase):
+     id: int
+     user_id: int
+
+     class Config:
+          orm_mode = True
+
+class AcceptedInUser(StatementsBase):
+     id: int
+     company_id: int
 
      class Config:
           orm_mode = True

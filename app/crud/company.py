@@ -79,3 +79,5 @@ class CompanyService(BaseSession):
           if not company:
                raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='Company doesnt found!')
           await self.session.delete(company)
+
+

@@ -9,6 +9,8 @@ from app.models.user import Company, User
 from fastapi.security import HTTPBearer
 from app.crud.auth import AuthService
 from app.crud.company import CompanyService
+from app.crud.user import UserService
+from app.crud.member import MemberService
 
 from app.schemas.company import CompanyBase, CompanyCreate, CompanyList, CompanyUpdate
 from app.crud import get_current_user, get_owner, get_owner_or_admin
@@ -41,5 +43,14 @@ async def update_company(id:int, company:CompanyBase, session: AsyncSession = De
 async def delete_company_by_owner(company_id:int, session: AsyncSession= Depends(get_db),
                          company: Company = Depends(get_owner)):
     return await  CompanyService(session=session).delete_company(id=company_id)
+
+@company_router.delete("/companies/{company_id}/users/{user_id}", status_code=status.HTTP_204_NO_CONTENT)
+async def delete_user_from_company(company_id:int, user_id:int, session: AsyncSession= Depends(get_db),
+                         owner: User = Depends(get_owner)):
+    company = await CompanyService(session=session).get_company_by_id(id=company_id)
+    if company.owner_id != owner.id:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN)
+    user = await UserService(session=session).get_user(user_id=user_id)
+    return await  MemberService(session=session).delete_user(company=company, user=user)
 
 

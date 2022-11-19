@@ -38,6 +38,7 @@ class User(Base):
 
     companies = relationship("Company", secondary=keywords_tables, back_populates="users")
     join_statements = relationship("JoinStatement", back_populates="owner_statement") #  JS to User
+    __mapper_args__ = {"eager_defaults": True}
 
 
 class Company(Base):
