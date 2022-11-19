@@ -5,13 +5,13 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from fastapi.encoders import jsonable_encoder
 from ..crud import auth 
 from app.schemas.user import Token, UserCreate
-from app.db import get_db
+from app.db.db import get_db
 from app.crud import AuthService, get_current_user
-from app.routers.routers import UserBase
+from app.routers.user import UserBase
 import os 
 from fastapi_auth0 import Auth0
 from fastapi.security import OAuth2PasswordRequestForm
-from app.server.models import User
+from app.models.user import User
 
 
 auth_router = APIRouter()

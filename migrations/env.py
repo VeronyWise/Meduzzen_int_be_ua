@@ -1,13 +1,19 @@
 from logging.config import fileConfig
-import os 
 from sqlalchemy import engine_from_config
-from app.server.models import User
 from sqlalchemy import pool
-from app.db import DATABASE_URL
+from app.db.db import DATABASE_URL
 
 from alembic import context
-# from app.server.models  import users
-from app.server.models import Base
+from app.db.db import Base
+from app.models.user import Base
+from app.models import *
+from sqlalchemy_utils.types.choice import ChoiceType
+import enum
+
+# from app.models.answer import Base
+# from app.models.join_statement import Base
+# from app.models.quiz import Base
+# from app.models.question import Base
 
 
 # this is the Alembic Config object, which provides

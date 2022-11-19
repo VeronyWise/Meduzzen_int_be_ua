@@ -1,22 +1,24 @@
 from fastapi import HTTPException
 from requests import session
 from starlette import status
-from app.server.models import User
+from app.models.user import User
 from app.schemas import user
 from hashlib import sha256
 from typing import List, Optional
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, update, insert
 import re
 from app.crud.base_session import BaseSession
-
+from app.models.enummodels import StatementType, UserType
 
 
 class UserService(BaseSession):
 
-     async def get_user(self, user_id: int):
-          user: User = await self.session.get(User, user_id)
+     async def get_user(self, user_id: int) -> User:
+          user: User = await self.session.execute(select(User).where(User.id==user_id).options(joinedload(User.companies)))
+          user = user.scalar()
+          # user: User = user.scalars().one_or_none()
           if not user:
                raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='User doesnt found!')
           return user

@@ -1,11 +1,11 @@
 from fastapi import Depends, APIRouter, Body, HTTPException
 from fastapi.encoders import jsonable_encoder
 from starlette import status
-from app.db import engine, metadata, get_db
+from app.db.db import engine, metadata, get_db
 from fastapi_pagination import Page, Params
 from fastapi_pagination.paginator import paginate
 from sqlalchemy.ext.asyncio import AsyncSession
-from app.server.models import User
+from app.models.user import User
 from fastapi.security import HTTPBearer
 from app.crud.auth import AuthService
 

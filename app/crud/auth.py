@@ -2,31 +2,39 @@ from app.crud.base_session import BaseSession
 from app.crud.user import UserService
 from fastapi import Depends, status, HTTPException
 from fastapi.security import HTTPBearer
-from app.db import get_db
+from app.db.db import get_db
 from sqlalchemy.ext.asyncio import AsyncSession
 from jose import JWTError, jwt
 import jwt as auth_jwt
 from app.schemas.user import UserBase, UserCreate, Token, UserLogin, UserUpdate
 from datetime import datetime, timedelta
 from fastapi.encoders import jsonable_encoder
-from app.server.models import User
+from app.models.user import User
 from ..settings import settings
 from fastapi.security import OAuth2PasswordBearer
 from typing import Any, Dict, Optional
-
+from app.models.user import User, Company, UserType
 
 
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl='/login')
 token_auth_schema = HTTPBearer()
 
-async def get_current_user(token =  Depends(token_auth_schema), db: AsyncSession = Depends(get_db)) -> UserBase:
-
+async def get_current_user(token =  Depends(token_auth_schema), db: AsyncSession = Depends(get_db)) -> User:
     result = VerifyToken(token.credentials).verify() 
     if 'email' in result:
         return await AuthService(db).get_or_create_user(email=result['email'])
     return await AuthService(db).verify_token(token.credentials)
 
+async def get_owner(user = Depends(get_current_user)) -> User:
+    if user.user_type != UserType.owner:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="No access!")
+    return user
+
+async def get_owner_or_admin(user = Depends(get_current_user)) -> User:
+    if user.user_type not in (UserType.admin, UserType.owner):
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="No access!")
+    return user
 
 
 exception = HTTPException(
